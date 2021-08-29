@@ -1,5 +1,5 @@
 {
-  "name": "IgnoreBot",
+  "name": "eula",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -7,7 +7,16 @@
     "typescript": "^4.4.2"
   },
   "dependencies": {
+    "@discordjs/builders": "^0.6.0",
+    "@discordjs/rest": "^0.1.0-canary.0",
+    "discord-api-types": "^0.22.0",
     "discord.js": "^13.1.0",
     "dotenv": "^10.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "run-dev": "node --inspect dist/index.js -- --devMode -s 758384067934158858",
+    "run": "node dist/index.js"
   }
 }
