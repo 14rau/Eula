@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { Client, CommandInteraction, MessageActionRow, MessageButton, MessageEmbed, Permissions } from "discord.js";
 import { Command } from ".";
+import { Duration } from "luxon";
 
 
 export const command: Command = {
@@ -12,6 +13,7 @@ export const command: Command = {
                 .setColor("#0099ff")
                 .setTitle("Eula - about")
                 .setDescription("Eula is a simple message deletion bot. You can filter for specific words, regex or generally disable URL postings. In case you just want the message from someone be deleted, i can also make Eula do this!")
+                .addField("Uptime", `${Duration.fromMillis(client.uptime).toFormat("hh:mm")}`)
                 const row = new MessageActionRow()
                     .addComponents(
                         new MessageButton()
