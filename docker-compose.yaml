@@ -1,0 +1,8 @@
+version: '3'
+services:
+  bot:
+    build: .
+    container_name: eula-bot
+    restart: on-failure
+    env_file:
+      - .env
