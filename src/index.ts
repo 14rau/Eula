@@ -9,9 +9,17 @@ import { Command } from "./commands";
 
 const rest = new REST({ version: '9' }).setToken(process.env.token);
 
+export type ActionType = "BAN" | "KICK";
+
 interface ServerSettings {
     ignoredUsers: string[];
     urlFilter: boolean;
+    automod: {
+        active: boolean;
+        actionAfter: number,
+        actionInterval: number,
+        action: ActionType
+    }
 }
 
 async function ensureGuildSettings(guildId: string, dataLoader: DataLoader<Record<string, ServerSettings>>) {
@@ -19,9 +27,30 @@ async function ensureGuildSettings(guildId: string, dataLoader: DataLoader<Recor
         dataLoader.data[guildId] = {
             ignoredUsers: [],
             urlFilter: false,
+            automod: {
+                active: false,
+                actionAfter: 3,
+                action: "KICK",
+                actionInterval: 10000,
+            }
         }
         await dataLoader.save();
     }
+}
+
+async function automig(dataLoader: DataLoader<Record<string, ServerSettings>>) {
+    console.log(dataLoader.data)
+    for(const key in dataLoader.data) {
+        if(!(dataLoader.data[key]["automod"])) {
+            dataLoader.data[key]["automod"] = {
+                active: false,
+                actionAfter: 3,
+                action: "KICK",
+                actionInterval: 10000,
+            }
+        }
+    }
+    dataLoader.save();
 }
 
 
@@ -30,6 +59,9 @@ async function bootstrap() {
 
     await settings.init();
     settings.loadFrom("../../localdb.json");
+    setTimeout(async () => {
+        // await automig(settings);
+    }, 500)
 
     const client = new Client({
         intents: [ Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILDS ],
@@ -41,6 +73,7 @@ async function bootstrap() {
     for (const file of commandFiles) {
         const command = require(`./commands/${file}`);
         const cmd = command.command.data.toJSON()
+        if(!process.argv.includes("--devMode") && cmd.devMode) continue;
         commands.push(cmd);
         functions.set(cmd.name, command.command);
     }
@@ -91,6 +124,16 @@ async function bootstrap() {
     
     client.on("messageCreate", async (message) => {
         if(settings.data[message.guild.id]?.ignoredUsers.includes(message.author.id)) message.delete();
+
+        if(settings.data[message.guild.id]?.urlFilter) {
+            if (message.content.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/)) {
+                if (!(message.member.permissions.has("ADMINISTRATOR") || message.member.permissions.has("MANAGE_MESSAGES"))) {
+                    if (message.content.startsWith("https://tenor.com/view/")) return;
+                    await message.delete();
+                    message.channel.send("Das Posten von Links ist untersagt.");
+                }
+            }
+        }
     });
 
     client.on("interactionCreate", async (er) => {

@@ -31,6 +31,7 @@ export class DataLoader<T> {
     }
 
     public async save(to?: string) {
+        console.log(this.data);
         await fs.writeFile(to ?? this.fileName, JSON.stringify(this.data), () => {})
     }
 }
