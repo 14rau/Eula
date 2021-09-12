@@ -1,5 +1,6 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { Client, CommandInteraction, Permissions } from "discord.js";
+import { Client, CommandInteraction } from "discord.js";
+import { EulaDb } from "eula_db";
 import { Command } from ".";
 
 
@@ -8,12 +9,9 @@ export const command: Command = {
         .setName('allow')
         .addUserOption(option => option.setName('target').setDescription('Select a user').setRequired(true))
         .setDescription('allow a user to write again'),
-    action: (interaction: CommandInteraction, client: Client) => {
+    action: async (interaction: CommandInteraction, client: Client, eulaDb) => {
         const member = interaction.options.getUser("target");
-        const data = new Set(global.settings.data[interaction.guildId].ignoredUsers)
-        data.delete(member.id);
-        global.settings.data[interaction.guildId].ignoredUsers = Array.from(data);
-        global.settings.save();
+        eulaDb.userClient.pardonUser(interaction.guildId, member.id);
         interaction.reply(`Vengeance... was enough for ${member.username}`)
     },
     permissions: [ "ADMINISTRATOR" ],

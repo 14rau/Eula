@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { Client, CommandInteraction, Permissions } from "discord.js";
+import { Client, CommandInteraction } from "discord.js";
 import { Command } from ".";
 
 
@@ -8,10 +8,9 @@ export const command: Command = {
         .setName("urlfilter")
         .addBooleanOption((e) => e.setName("status").setDescription("The set status"))
         .setDescription("Users with 'Administrator' or 'Manage Message' are still allowed to post links."),
-    action: (interaction: CommandInteraction, client: Client) => {
+    action: async (interaction: CommandInteraction, client: Client, eulaDb) => {
         const status = interaction.options.getBoolean("status");
-        global.settings.data[interaction.guildId].urlFilter = status;
-        global.settings.save();
+        await eulaDb.settingClient.setSetting(interaction.guildId, "urlFilter", `${status}`, "bool");
         interaction.reply(`Url filter was set to \`${status}\``);
     },
     permissions: [ "ADMINISTRATOR" ],

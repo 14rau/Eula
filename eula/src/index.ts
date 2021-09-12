@@ -1,64 +1,42 @@
 require("dotenv").config();
 const fs = require("fs");
-import { Client, CommandInteraction, Intents, Permissions } from "discord.js";
-import { DataLoader } from "./lib/DataLoader";
+import { Client, Intents, Permissions } from "discord.js";
+import { EulaDb } from "eula_db";
 
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
 import { Command } from "./commands";
+import { LogClient } from "./lib/LogClient";
+import { AutoModManager } from "./lib/AutoModRunner";
 
 const rest = new REST({ version: '9' }).setToken(process.env.token);
 
 export type ActionType = "BAN" | "KICK";
 
-interface ServerSettings {
-    ignoredUsers: string[];
-    urlFilter: boolean;
-    automod: {
-        active: boolean;
-        actionAfter: number,
-        actionInterval: number,
-        action: ActionType
-    }
-}
 
-async function ensureGuildSettings(guildId: string, dataLoader: DataLoader<Record<string, ServerSettings>>) {
-    if(!dataLoader.data[guildId]) {
-        dataLoader.data[guildId] = {
-            ignoredUsers: [],
-            urlFilter: false,
-            automod: {
-                active: false,
-                actionAfter: 3,
-                action: "KICK",
-                actionInterval: 10000,
-            }
-        }
-        await dataLoader.save();
-    }
-}
-
-async function automig(dataLoader: DataLoader<Record<string, ServerSettings>>) {
-    console.log(dataLoader.data)
-    for(const key in dataLoader.data) {
-        if(!(dataLoader.data[key]["automod"])) {
-            dataLoader.data[key]["automod"] = {
-                active: false,
-                actionAfter: 3,
-                action: "KICK",
-                actionInterval: 10000,
-            }
-        }
-    }
-    dataLoader.save();
-}
 
 
 async function bootstrap() {
-    const settings = new DataLoader<Record<string, ServerSettings>>("localdb.json", {});
+    const eulaDb = new EulaDb({
+        connectionConfig: {
+            type: "mysql",
+            password: process.env.MYSQL_PASSWORD,
+            username: process.env.MYSQL_USER,
+            database: process.env.MYSQL_DATABASE,
+            synchronize: true,
+            logger: "advanced-console",
+        },
+        redisClient: {
+            socket: {
+                
+            }
+        },
+        secret: process.env.secret
+        
+    });
+    await eulaDb.connect();
+    
 
-    await settings.init();
-    settings.loadFrom("../../localdb.json");
     setTimeout(async () => {
         // await automig(settings);
     }, 500)
@@ -67,9 +45,12 @@ async function bootstrap() {
         intents: [ Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILDS ],
     });
 
+    const logClient = new LogClient(eulaDb, client);
+
     const commandFiles = fs.readdirSync('./dist/commands').filter(file => file.endsWith('.js') && !file.includes("index"));
     const functions = new Map<string, Command>();
     const commands = [];
+    const developerCommands = [];
     for (const file of commandFiles) {
         const command = require(`./commands/${file}`);
         const cmd = command.command.data.toJSON()
@@ -80,11 +61,11 @@ async function bootstrap() {
 
     await client.login(process.env.token);
 
-    global.settings = settings;
+
     
     
     
-    client.on("ready", async () => {
+    client.once("ready", async () => {
         console.log("Bot started successfully");
         client.user.setActivity({
             type: "STREAMING",
@@ -121,29 +102,25 @@ async function bootstrap() {
             }
         } 
     });
+
+    const autoMod = new AutoModManager(eulaDb);
+
+    client.guilds.cache.forEach(e => autoMod.registerRunner(e.id))
     
     client.on("messageCreate", async (message) => {
-        if(settings.data[message.guild.id]?.ignoredUsers.includes(message.author.id)) message.delete();
-
-        if(settings.data[message.guild.id]?.urlFilter) {
-            if (message.content.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/)) {
-                if (!(message.member.permissions.has("ADMINISTRATOR") || message.member.permissions.has("MANAGE_MESSAGES"))) {
-                    if (message.content.startsWith("https://tenor.com/view/")) return;
-                    await message.delete();
-                    message.channel.send("Das Posten von Links ist untersagt.");
-                }
-            }
-        }
+        eulaDb.userClient.isUserBlocked(message.guild.id, message.author.id).then(e => {
+            if(e) message.delete();
+        });
+        autoMod.run(message);
     });
 
     client.on("interactionCreate", async (er) => {
-        if(er.isCommand()) {
+        if(er.isCommand() && er.guildId) {
             try {
-                await ensureGuildSettings(er.guildId, settings)
                 const cmd = functions.get(er.commandName);
                 const perm: Readonly<Permissions> = er.member?.permissions as Readonly<Permissions>;
                 if(!cmd.permissions || cmd.permissions?.every(e => perm.has(e))) {
-                   cmd.action?.(er, client);
+                   cmd.action?.(er, client, eulaDb, logClient.log(er.guildId), autoMod);
                 } else {
                     er.reply({
                         content: "...Schlecht [MISSING PERM]",
@@ -157,6 +134,11 @@ async function bootstrap() {
                 });
                 console.log(err);
             }
+        } else if (!er.guildId && er.isCommand()) {
+            er.reply({
+                content: "[ERR] Can't help you, sorry (DM Commands disabled)",
+                ephemeral: true,
+            });
         }
     });
 }

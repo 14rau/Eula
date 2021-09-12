@@ -1,5 +1,3 @@
-import { DataLoader } from "./lib/DataLoader";
-
 declare module "*.json" {
     const value: any;
     export default value;
@@ -8,7 +6,7 @@ declare module "*.json" {
 declare global {
     namespace NodeJS {
       interface Global {
-          settings: DataLoader;
+          eulaDb: EulaDb;
       }
     }
   }
