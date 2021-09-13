@@ -41,6 +41,7 @@ export class UserClient {
            user = new User();
            user.anoUser = hashed;
            user.guildId = guild;
+           user.isBlocked = true;
            repo.save(user);
         } else {
             return;
