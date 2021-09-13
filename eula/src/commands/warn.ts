@@ -29,6 +29,7 @@ export const command: Command = {
     action: async (interaction: CommandInteraction, client: Client, db, log) => {
         const now = DateTime.now();
         const user = interaction.options.getUser("user");
+        await db.ensureUser(user.id, interaction.guildId);
         const warning = await db.warningClient.createWarning(
             user.id,
             interaction.guildId,

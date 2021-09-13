@@ -63,6 +63,21 @@ export class EulaDb {
             guildRepo.save(guild);
         }
     }
+    public async ensureUser(userId: string, guildId: string) {
+        const hashed = this.encryptUserId(guildId, userId);
+        const userEntry = await this.redisClient.get(`user_${hashed}`);
+        if(userEntry) return;
+        const repo = this.connection.getRepository(User);
+        let user = await repo.findOne({ where: { anoUser: hashed } });
+        if(!user) {
+           user = new User();
+           user.anoUser = hashed;
+           user.guildId = guildId;
+           user.isBlocked = true;
+           repo.save(user);
+        }
+        await this.redisClient.setEx(`user_${hashed}`, 60*60*24, hashed);
+    }
 
     public async purge(guild: string) {
         const guildRepo = this.connection.getRepository(Guild);

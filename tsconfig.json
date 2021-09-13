@@ -2,7 +2,7 @@
 	"include": [],
 	"compilerOptions": {},
 	"references": [
-		{ "path": "eula" },
 		{ "path": "eula_db" },
+		{ "path": "eula" }
 	]
 }
