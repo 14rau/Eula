@@ -1,0 +1,16 @@
+{
+	"name": "eula",
+	"version": "1.0.0",
+	"private": true,
+	"engines": {
+		"node": "16.8.0"
+	},
+	"workspaces": [
+		"eula_db",
+        "eula"
+	],
+	"scripts": {
+		"build": "tsc --build",
+		"watch": "tsc --build --watch"
+	}
+}

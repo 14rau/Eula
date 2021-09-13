@@ -1,2 +1,19 @@
+node_modules
+coverage
+volumes
+build
+dist
+etcd.json
 .env
-localdb.json
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+[Dd]esktop.ini
+
+# Other
+npm-debug.log

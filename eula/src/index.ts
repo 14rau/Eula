@@ -1,5 +1,6 @@
 require("dotenv").config();
 const fs = require("fs");
+console.log(process.env.token, "TOKEN")
 import { Client, Intents, Permissions } from "discord.js";
 import { EulaDb } from "eula_db";
 
@@ -25,10 +26,11 @@ async function bootstrap() {
             database: process.env.MYSQL_DATABASE,
             synchronize: true,
             logger: "advanced-console",
+            host: process.env.DB_HOST,
         },
         redisClient: {
             socket: {
-                
+                host: process.env.REDIS_HOST,
             }
         },
         secret: process.env.secret
@@ -47,7 +49,7 @@ async function bootstrap() {
 
     const logClient = new LogClient(eulaDb, client);
 
-    const commandFiles = fs.readdirSync('./dist/commands').filter(file => file.endsWith('.js') && !file.includes("index"));
+    const commandFiles = fs.readdirSync(process.env.DOCKER_ENV === "DOCKER" ? './eula/dist/commands' : './dist/commands').filter(file => file.endsWith('.js') && !file.includes("index"));
     const functions = new Map<string, Command>();
     const commands = [];
     const developerCommands = [];
