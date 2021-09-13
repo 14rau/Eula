@@ -1,0 +1,8 @@
+{
+	"include": [],
+	"compilerOptions": {},
+	"references": [
+		{ "path": "eula" },
+		{ "path": "eula_db" },
+	]
+}
