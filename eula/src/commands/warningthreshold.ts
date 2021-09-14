@@ -1,6 +1,4 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { Client, CommandInteraction } from 'discord.js';
-import { EulaDb } from 'eula_db';
 import { Command } from '.';
 
 
@@ -12,10 +10,10 @@ export const command: Command = {
         )
         .setName('warningthreshold')
         .setDescription('Sets the warning threshold for your guild'),
-    action: async (interaction: CommandInteraction, client: Client, db) => {
-        db.settingClient.setSetting(interaction.guildId, "warningthreshold", interaction.options.getInteger("threshold")?.toString(), "int");
+    action: async ({interaction, eulaDb, language}) => {
+        eulaDb.settingClient.setSetting(interaction.guildId, "warningthreshold", interaction.options.getInteger("threshold")?.toString(), "int");
         interaction.reply({
-            content: "Threshold was set",
+            content: language.get("warningthreshold.reply"),
             ephemeral: true,
         })
     },

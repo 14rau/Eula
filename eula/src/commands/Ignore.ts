@@ -9,11 +9,11 @@ export const command: Command = {
         .setName('ignore')
         .addUserOption(option => option.setName('target').setDescription('Select a user'))
         .setDescription('Will ignore an user!'),
-    action: async (interaction: CommandInteraction, client: Client, eulaDb) => {
+    action: async ({interaction, eulaDb, language}) => {
         const member = interaction.options.getUser('target');
         await eulaDb.userClient.blockUser(interaction.guildId, member.id);
         
-        interaction.reply(`${member.username}, Vengeance will be mine!`);
+        interaction.reply(language.get("ignore.reply", { username: member.username }));
     },
     permissions: [ "ADMINISTRATOR" ],
 }

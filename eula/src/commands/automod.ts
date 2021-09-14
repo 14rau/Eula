@@ -13,37 +13,37 @@ export const command: Command = {
         )
         .addIntegerOption((e) => e.setName("remember_for_x_minutes").setDescription("How many minutes Eula will remember the action"))
         .setDescription("Enables/Disables the automod and set accordingly the settings"),
-    action: (interaction: CommandInteraction, client: Client, db, _, mod) => {
+    action: ({interaction, eulaDb, autoMod, language}) => {
         if(interaction.options.getBoolean("status") != null)
-            db.settingClient.setSetting(
+            eulaDb.settingClient.setSetting(
                 interaction.guildId,
                 "status",
                 `${interaction.options.getBoolean("status")}`,
                 "bool"
             );
         if(interaction.options.getString("taken_action") != null)
-            db.settingClient.setSetting(
+            eulaDb.settingClient.setSetting(
                 interaction.guildId,
                 "taken_action",
                 `${interaction.options.getString("taken_action")}`,
                 "string"
             );
         if(interaction.options.getInteger("take_action_after") != null)
-            db.settingClient.setSetting(
+            eulaDb.settingClient.setSetting(
                 interaction.guildId,
                 "take_action_after",
                 `${interaction.options.getInteger("take_action_after")}`,
                 "string"
             );
         if(interaction.options.getInteger("remember_for_x_minutes") != null)
-            db.settingClient.setSetting(
+            eulaDb.settingClient.setSetting(
                 interaction.guildId,
                 "remember_for_x_minutes",
                 `${interaction.options.getInteger("remember_for_x_minutes")}`,
                 "string"
             );
-        mod.refreshRunner(interaction.guildId);
-        interaction.reply({ ephemeral: true, content: "Automod Settings updated" });
+        autoMod.refreshRunner(interaction.guildId);
+        interaction.reply({ ephemeral: true, content: language.get("automod.reply") });
 
     },
     permissions: [ "ADMINISTRATOR" ],

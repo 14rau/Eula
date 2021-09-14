@@ -11,10 +11,10 @@ export const command: Command = {
         )
         .setName('logchannel')
         .setDescription('Sets channel eula will writes logs to'),
-    action: async (interaction: CommandInteraction, client: Client, db) => {
-        db.settingClient.setSetting(interaction.guildId, "logchannel", interaction.options.getChannel("channel")?.id, "string");
+    action: async ({interaction, eulaDb, language}) => {
+        eulaDb.settingClient.setSetting(interaction.guildId, "logchannel", interaction.options.getChannel("channel")?.id, "string");
         interaction.reply({
-            content: "Logchannel has been set",
+            content: language.get("logchannel.reply"),
             ephemeral: true,
         })
     },

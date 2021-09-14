@@ -1,6 +1,5 @@
 require("dotenv").config();
 const fs = require("fs");
-console.log(process.env.token, "TOKEN")
 import { Client, Intents, Permissions } from "discord.js";
 import { EulaDb } from "eula_db";
 
@@ -9,6 +8,7 @@ import { Routes } from "discord-api-types/v9";
 import { Command } from "./commands";
 import { LogClient } from "./lib/LogClient";
 import { AutoModManager } from "./lib/AutoModRunner";
+import { Language, LanguageManager } from "./lib/lang/Language";
 
 const rest = new REST({ version: '9' }).setToken(process.env.token);
 
@@ -48,7 +48,6 @@ async function bootstrap() {
     });
 
     const logClient = new LogClient(eulaDb, client);
-
     const commandFiles = fs.readdirSync(process.env.DOCKER_ENV === "DOCKER" ? './eula/dist/commands' : './dist/commands').filter(file => file.endsWith('.js') && !file.includes("index"));
     const functions = new Map<string, Command>();
     const commands = [];
@@ -106,6 +105,7 @@ async function bootstrap() {
     });
 
     const autoMod = new AutoModManager(eulaDb);
+    const langManager = new LanguageManager();
 
     client.guilds.cache.forEach(e => autoMod.registerRunner(e.id))
     
@@ -122,7 +122,8 @@ async function bootstrap() {
                 const cmd = functions.get(er.commandName);
                 const perm: Readonly<Permissions> = er.member?.permissions as Readonly<Permissions>;
                 if(!cmd.permissions || cmd.permissions?.every(e => perm.has(e))) {
-                   cmd.action?.(er, client, eulaDb, logClient.log(er.guildId), autoMod);
+                    const lang: string = await eulaDb.settingClient.getSetting(er.guildId, "language") as string;
+                   cmd.action?.({interaction: er , client, eulaDb, log: logClient.log(er.guildId), autoMod, language: langManager.getLanguage(lang ?? process.env.defaultLanguage ?? "en")});
                 } else {
                     er.reply({
                         content: "...Schlecht [MISSING PERM]",

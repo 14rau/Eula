@@ -26,11 +26,11 @@ export const command: Command = {
         )
         .setName('warn')
         .setDescription('Warns a user'),
-    action: async (interaction: CommandInteraction, client: Client, db, log) => {
+    action: async ({interaction, eulaDb, log, language}) => {
         const now = DateTime.now();
         const user = interaction.options.getUser("user");
-        await db.ensureUser(user.id, interaction.guildId);
-        const warning = await db.warningClient.createWarning(
+        await eulaDb.ensureUser(user.id, interaction.guildId);
+        const warning = await eulaDb.warningClient.createWarning(
             user.id,
             interaction.guildId,
             {
@@ -41,10 +41,11 @@ export const command: Command = {
         );
         const warningEmbed = new MessageEmbed()
             .setTimestamp(now.toJSDate())
-            .setTitle("Added Warning")
-            .setDescription(`<@${user.id}> (**${user.username}**) has been warned by <@${interaction.user.id}> (${interaction.user.username})\nReason:\n${warning.warning.reason}
-            \n${warning.warning.validTill ? `Warning is valid till <t:${Math.floor(DateTime.fromISO(warning.warning.validTill).toSeconds())}:f>` : "Warning is added permanently (Delete with /removeWarning)"}
-            Amount of warnings: ${warning.warnings?.length ?? 0}`);
+            .setTitle(language.get("warn.title"))
+            .setDescription(`${language.get("warn.description", { user1: `<@${user.id}>`, username1: `**${user.username}**`, user2: `<@${interaction.user.id}>`, username2: `**${interaction.user.username}**`, reason: warning.warning.reason })}
+            \n${warning.warning.validTill ? language.get("warn.warningWithTs", { timestamp: `<t:${Math.floor(DateTime.fromISO(warning.warning.validTill).toSeconds())}:f>` }) : language.get("warn.warningPermanent")}\n
+            ${language.get("warn.amountWarnings", { amount: `${warning.warnings?.length ?? 0}` })}
+            `)
             log({
             embeds: [
                 warningEmbed
@@ -55,17 +56,18 @@ export const command: Command = {
                 embeds: [
                     new MessageEmbed()
                         .setTimestamp(now.toJSDate())
-                        .setTitle("Added Warning")
-                        .setDescription(`<@${user.id}> (**${user.username}**) has been warned by <@${interaction.user.id}> (${interaction.user.username})\nReason:\n${warning.warning.reason}
-                        \n${warning.warning.validTill ? `Warning is valid till <t:${Math.floor(DateTime.fromISO(warning.warning.validTill).toSeconds())}:f>` : "Warning is added permanently"}`)
+                        .setTitle(language.get("warn.title"))
+                        .setDescription(`${language.get("warn.description", { user1: `<@${user.id}>`, username1: `**${user.username}**`, user2: `<@${interaction.user.id}>`, username2: `**${interaction.user.username}**`, reason: warning.warning.reason })}
+                        \n${warning.warning.validTill ? language.get("warn.warningWithTs", { timestamp: `<t:${Math.floor(DateTime.fromISO(warning.warning.validTill).toSeconds())}:f>` }) : language.get("warn.warningPermanent")}\n
+                       `)
                 ]
             })
         }
 
-        const threshold: number = await db.settingClient.getSetting(interaction.guildId, "warningthreshold") as number;
-        interaction.reply({ content: "Warning has been generated", embeds: [ warningEmbed ], ephemeral: true });
+        const threshold: number = await eulaDb.settingClient.getSetting(interaction.guildId, "warningthreshold") as number;
+        interaction.reply({ content: language.get("warn.reply"), embeds: [ warningEmbed ], ephemeral: true });
         if(threshold && warning.warnings.length >= threshold) {
-            interaction.followUp({ content: "[Warning]: Threshold of warning has been reached for this user. You may want to take action.", ephemeral: true});
+            interaction.followUp({ content: language.get("warn.treshholdWarning"), ephemeral: true});
         }
     },
     permissions: [ "KICK_MEMBERS" ],
