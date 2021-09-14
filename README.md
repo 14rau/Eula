@@ -61,4 +61,4 @@ yarn nodemon
 Commands should be added into the `src/commands` folder. You can use the DataLoder class, to load/save Data as a json file. By default Eula will create a localdb.json file to store the data, since a database would be a overkill for this small project.
 
 ### Deploy
-To deploy Eula by yourself, you have to have docker installed, and also created your `.env` and copied over your token. You can either use the docker-compose file, or just plain docker.
+To deploy Eula by yourself, you have to have docker installed, and also created your `.env` and copied over your token. You only have to run `docker-compose up --build` to run your current version in an container.
