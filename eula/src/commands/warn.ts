@@ -47,7 +47,7 @@ export const command: Command = {
             Amount of warnings: ${warning.warnings?.length ?? 0}`);
             log({
             embeds: [
-                
+                warningEmbed
             ]
         });
         if(interaction.options.getBoolean("notification")) {
