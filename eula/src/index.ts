@@ -8,7 +8,9 @@ import { Routes } from "discord-api-types/v9";
 import { Command } from "./commands";
 import { LogClient } from "./lib/LogClient";
 import { AutoModManager } from "./lib/AutoModRunner";
-import { Language, LanguageManager } from "./lib/lang/Language";
+import { LanguageManager } from "./lib/lang/Language";
+
+export const langManager = new LanguageManager();
 
 const rest = new REST({ version: '9' }).setToken(process.env.token);
 
@@ -105,7 +107,7 @@ async function bootstrap() {
     });
 
     const autoMod = new AutoModManager(eulaDb);
-    const langManager = new LanguageManager();
+    
 
     client.guilds.cache.forEach(e => autoMod.registerRunner(e.id))
     
@@ -131,11 +133,10 @@ async function bootstrap() {
                     })
                 }
             } catch (err) {
-                er.reply({
-                    content: "[ERR] I will have my vengeance... someday",
-                    ephemeral: true,
-                });
                 console.log(err);
+                er.channel.send({
+                    content: "[ERR] I will have my vengeance... someday?"
+                });
             }
         } else if (!er.guildId && er.isCommand()) {
             er.reply({

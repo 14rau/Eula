@@ -1,6 +1,17 @@
 import { get } from "lodash";
 
 export class LanguageManager {
+    public get allLanguages(): { name: string, short: string }[] {
+        const languages = [];
+        for(const key in this.languages) {
+            languages.push({
+                name: this.languages[key].name,
+                short: this.languages[key].short
+            })
+        }
+        return languages;
+    }
+
     // load languages
     private languages = require("./langs");
     // lang map

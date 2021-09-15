@@ -1,7 +1,10 @@
 {
+    "name": "deutsch",
+    "short": "de",
+    "lang_set": "Sprache wurde auf deutsch gesetzt",
     "about": {
-        "title": "Eula - about",
-        "description": "Eula is a simple message deletion bot. You can filter for specific words, regex or generally disable URL postings. In case you just want the message from someone be deleted, i can also make Eula do this!",
+        "title": "Eula - Über",
+        "description": "Eula ist ein einfacher Moderations und Log Bot",
         "uptime": "Uptime",
         "invite": "Invite",
         "support": "Support"
@@ -10,30 +13,30 @@
         "reply": "Vengeance... was enough for {:username}"
     },
     "automod": {
-        "reply": "Automod settings updated"
+        "reply": "Automod Einstellungen wurden geändert"
     },
     "ignore": {
         "reply": "{:username}, Vengeance will be mine!"
     },
     "logchannel": {
-        "reply": "Logchannel has been set"
+        "reply": "Logchannel wurde gesetzt"
     },
     "purge": {
-        "reply": "Your guild has been purged from all data."
+        "reply": "Deine Server Informationen wurden gelöscht. "
     },
     "urlFilter": {
-        "reply": "Url filter was set to `{:status}`"
+        "reply": "Url filter wurde gesetzt auf: `{:status}`"
     },
     "warn": {
-        "title": "Added Warning",
-        "description": "{:user1} ({:username1}) has been warned by {:user2} ({:username2})\nReason:\n{:reason}",
-        "warningWithTs": "Warning is valid till {:timestamp}",
-        "warningPermanent": "Warning is added permanently (Delete with /removeWarning)",
-        "amountWarnings": "Amount of warnings: {:amount}",
-        "reply": "Warning has been generated",
-        "treshholdWarning":  "[Warning]: Threshold of warning has been reached for this user. You may want to take action."
+        "title": "Verwarnung hinzugefügt",
+        "description": "{:user1} ({:username1}) wurde von {:user2} ({:username2}) verwarnt.\nGrund:\n{:reason}",
+        "warningWithTs": "Verwarnung ist gültig bis: {:timestamp}",
+        "warningPermanent": "Warnung wurde permanent hinzugefügt (Löschen per /removeWarning)",
+        "amountWarnings": "Anzahl der Verwarnungen: {:amount}",
+        "reply": "Verwarnung wurde erstellt",
+        "treshholdWarning":  "[Warnung]: Maximalanzahl an Verwarnungen wurde erreicht. Du solltest darauf entsprechend reagieren."
     },
     "warningthreshold": {
-        "reply": "Threshold was set"
+        "reply": "Maximalanzahl wurde gesetzt"
     }
 }
