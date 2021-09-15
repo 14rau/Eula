@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { Client, CommandInteraction, MessageActionRow, MessageButton, MessageEmbed, Permissions } from "discord.js";
+import { MessageActionRow, MessageButton, MessageEmbed } from "discord.js";
 import { Command } from ".";
 import { Duration } from "luxon";
 

@@ -2,6 +2,7 @@
     "name": "english",
     "short": "en",
     "lang_set": "language was set to english",
+    "test": "{:test} Hello World",
     "about": {
         "title": "Eula - about",
         "description": "Eula is a simple message deletion bot. You can filter for specific words, regex or generally disable URL postings. In case you just want the message from someone be deleted, i can also make Eula do this!",

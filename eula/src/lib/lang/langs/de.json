@@ -2,6 +2,7 @@
     "name": "deutsch",
     "short": "de",
     "lang_set": "Sprache wurde auf deutsch gesetzt UWU",
+    "test": "{:test} Hallo Welt",
     "about": {
         "title": "Eula - Über",
         "description": "Eula ist ein einfacher Moderations und Log Bot",

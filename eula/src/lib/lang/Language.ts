@@ -35,11 +35,10 @@ export class Language {
     }
 
     public get(key: string, args?: Record<string, string>) {
-        const str: string = get(this.lang, key);
+        let str: string = get(this.lang, key);
         if(args) {
             for(const arg in args) {
-                
-                str.replace(new RegExp(`{:${arg}}`, "g"), args[arg])
+                str = str.replace(new RegExp(`{:${arg}}`, "gm"), args[arg])
             }
         }
         return str;
