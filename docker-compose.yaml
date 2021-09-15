@@ -18,7 +18,7 @@ services:
     container_name: redis
     image: redis:6.2
   mysql:
-    image: "mysql:5.7.10"
+    image: jsurf/rpi-mariadb
     env_file:
       - .env
     environment:
