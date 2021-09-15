@@ -8,10 +8,10 @@ export const command: Command = {
         .setName("urlfilter")
         .addBooleanOption((e) => e.setName("status").setDescription("The set status"))
         .setDescription("Users with 'Administrator' or 'Manage Message' are still allowed to post links."),
-    action: async (interaction: CommandInteraction, client: Client, eulaDb) => {
+    action: async ({interaction, eulaDb, language}) => {
         const status = interaction.options.getBoolean("status");
         await eulaDb.settingClient.setSetting(interaction.guildId, "urlFilter", `${status}`, "bool");
-        interaction.reply(`Url filter was set to \`${status}\``);
+        interaction.reply(language.get("urlFilter.reply", { status: `${status}` }));
     },
     permissions: [ "ADMINISTRATOR" ],
     isDev: true,

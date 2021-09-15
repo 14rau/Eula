@@ -1,0 +1,42 @@
+{
+    "name": "english",
+    "short": "en",
+    "lang_set": "language was set to english",
+    "about": {
+        "title": "Eula - about",
+        "description": "Eula is a simple message deletion bot. You can filter for specific words, regex or generally disable URL postings. In case you just want the message from someone be deleted, i can also make Eula do this!",
+        "uptime": "Uptime",
+        "invite": "Invite",
+        "support": "Support"
+    },
+    "allow": {
+        "reply": "Vengeance... was enough for {:username}"
+    },
+    "automod": {
+        "reply": "Automod settings updated"
+    },
+    "ignore": {
+        "reply": "{:username}, Vengeance will be mine!"
+    },
+    "logchannel": {
+        "reply": "Logchannel has been set"
+    },
+    "purge": {
+        "reply": "Your guild has been purged from all data."
+    },
+    "urlFilter": {
+        "reply": "Url filter was set to `{:status}`"
+    },
+    "warn": {
+        "title": "Added Warning",
+        "description": "{:user1} ({:username1}) has been warned by {:user2} ({:username2})\nReason:\n{:reason}",
+        "warningWithTs": "Warning is valid till {:timestamp}",
+        "warningPermanent": "Warning is added permanently (Delete with /removeWarning)",
+        "amountWarnings": "Amount of warnings: {:amount}",
+        "reply": "Warning has been generated",
+        "treshholdWarning":  "[Warning]: Threshold of warning has been reached for this user. You may want to take action."
+    },
+    "warningthreshold": {
+        "reply": "Threshold was set"
+    }
+}

@@ -1,0 +1,42 @@
+{
+    "name": "deutsch",
+    "short": "de",
+    "lang_set": "Sprache wurde auf deutsch gesetzt",
+    "about": {
+        "title": "Eula - Über",
+        "description": "Eula ist ein einfacher Moderations und Log Bot",
+        "uptime": "Uptime",
+        "invite": "Invite",
+        "support": "Support"
+    },
+    "allow": {
+        "reply": "Vengeance... was enough for {:username}"
+    },
+    "automod": {
+        "reply": "Automod Einstellungen wurden geändert"
+    },
+    "ignore": {
+        "reply": "{:username}, Vengeance will be mine!"
+    },
+    "logchannel": {
+        "reply": "Logchannel wurde gesetzt"
+    },
+    "purge": {
+        "reply": "Deine Server Informationen wurden gelöscht. "
+    },
+    "urlFilter": {
+        "reply": "Url filter wurde gesetzt auf: `{:status}`"
+    },
+    "warn": {
+        "title": "Verwarnung hinzugefügt",
+        "description": "{:user1} ({:username1}) wurde von {:user2} ({:username2}) verwarnt.\nGrund:\n{:reason}",
+        "warningWithTs": "Verwarnung ist gültig bis: {:timestamp}",
+        "warningPermanent": "Warnung wurde permanent hinzugefügt (Löschen per /removeWarning)",
+        "amountWarnings": "Anzahl der Verwarnungen: {:amount}",
+        "reply": "Verwarnung wurde erstellt",
+        "treshholdWarning":  "[Warnung]: Maximalanzahl an Verwarnungen wurde erreicht. Du solltest darauf entsprechend reagieren."
+    },
+    "warningthreshold": {
+        "reply": "Maximalanzahl wurde gesetzt"
+    }
+}

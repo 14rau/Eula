@@ -8,20 +8,20 @@ export const command: Command = {
     data: new SlashCommandBuilder()
         .setName("about")
         .setDescription("Show some informations about eula"),
-        action: (interaction: CommandInteraction, client: Client) => {
+        action: ({ interaction, client, language }) => {
             const exampleEmbed = new MessageEmbed()
                 .setColor("#0099ff")
                 .setTitle("Eula - about")
-                .setDescription("Eula is a simple message deletion bot. You can filter for specific words, regex or generally disable URL postings. In case you just want the message from someone be deleted, i can also make Eula do this!")
-                .addField("Uptime", `${Duration.fromMillis(client.uptime).toFormat("hh:mm")}`)
+                .setDescription(language.get("about.description"))
+                .addField(language.get("about.uptime"), `${Duration.fromMillis(client.uptime).toFormat("hh:mm")}`)
                 const row = new MessageActionRow()
                     .addComponents(
                         new MessageButton()
-                            .setLabel("Invite")
+                            .setLabel(language.get("about.invite"))
                             .setStyle("LINK")
                             .setURL("https://discord.com/api/oauth2/authorize?client_id=880880243873832990&permissions=2147493888&scope=bot"),
                         new MessageButton()
-                            .setLabel("Support")
+                            .setLabel(language.get("about.support"))
                             .setStyle("LINK")
                             .setURL("https://discord.gg/Zmtr88WBBx"),
                     );

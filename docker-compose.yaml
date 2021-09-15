@@ -8,7 +8,14 @@ services:
       REDIS_HOST: redis
       DB_HOST: mysql
       DOCKER_ENV: "DOCKER"
-
+      token: "-"
+      MYSQL_ROOT_PASSWORD: "-"
+      MYSQL_USER: "-"
+      MYSQL_PASSWORD: "-"
+      MYSQL_DATABASE: "-"
+      REDIS_HOST: "-"
+      DB_HOST: "-"
+      secret: "-"
     env_file:
       - .env
     depends_on:

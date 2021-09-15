@@ -13,11 +13,11 @@ export const command: Command = {
         )
         .setName('get_warnings')
         .setDescription('Sets the warning threshold for your guild'),
-    action: async (interaction: CommandInteraction, client: Client, db) => {
-        db.warningClient.getWarning(interaction.options.getUser("user").id, interaction.guildId)
+    action: async ({interaction, eulaDb}) => {
+        eulaDb.warningClient.getWarning(interaction.options.getUser("user").id, interaction.guildId)
         .then(console.log);
         interaction.reply({
-            content: "Ok",
+            content: "Not implemeted yet!",
             ephemeral: true,
         })
     },
