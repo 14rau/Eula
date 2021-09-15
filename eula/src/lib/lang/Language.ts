@@ -13,10 +13,11 @@ export class LanguageManager {
     }
 
     // load languages
-    private languages = require("./langs");
+    private languages = require("./langs").default;
     // lang map
     private langMap = new Map<string, Language>();
     constructor() {
+        console.log(this.languages);
         for(const key in this.languages) {
             this.langMap.set(key, new Language(this.languages[key]));
         }

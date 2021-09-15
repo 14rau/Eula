@@ -1,2 +1,6 @@
-export const de = require("./de.json");
-export const en = require("./en.json");
+import de from "./de.json";
+import en from "./en.json";
+export default {
+    de,
+    en
+}
