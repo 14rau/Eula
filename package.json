@@ -7,7 +7,7 @@
 	},
 	"workspaces": [
 		"eula_db",
-        "eula"
+       		 "eula"
 	],
 	"scripts": {
 		"build": "tsc --build",
