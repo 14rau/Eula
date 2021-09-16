@@ -13,9 +13,10 @@ export const command: Command = {
         )
         .setName('language')
         .setDescription('Set eulas server language'),
-    action: async ({interaction, eulaDb, language}) => {
+    action: async ({interaction, eulaDb, language, log}) => {
         const newLang = interaction.options.getString("language");
         await eulaDb.settingClient.setSetting(interaction.guildId, "language", newLang, "string");
+        log.refreshRunner(interaction.guildId);
         interaction.reply({
             ephemeral: true,
             content: langManager.getLanguage(newLang).get("lang_set"),

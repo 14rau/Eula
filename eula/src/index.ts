@@ -9,6 +9,7 @@ import { Command } from "./commands";
 import { LogClient } from "./lib/LogClient";
 import { AutoModManager } from "./lib/AutoModRunner";
 import { LanguageManager } from "./lib/lang/Language";
+import { LogManager } from "./lib/LogRunner";
 
 export const langManager = new LanguageManager();
 
@@ -56,10 +57,14 @@ async function bootstrap() {
     const developerCommands = [];
     for (const file of commandFiles) {
         const command = require(`./commands/${file}`);
-        const cmd = command.command.data.toJSON()
-        if(!process.argv.includes("--devMode") && cmd.devMode) continue;
-        commands.push(cmd);
-        functions.set(cmd.name, command.command);
+        try {
+            const cmd = command.command.data.toJSON()
+            if(!process.argv.includes("--devMode") && cmd.devMode) continue;
+            functions.set(cmd.name, command.command);
+        } catch (err) {
+            console.error(err)
+            console.error(file)
+        }
     }
 
     await client.login(process.env.token);
@@ -107,15 +112,23 @@ async function bootstrap() {
     });
 
     const autoMod = new AutoModManager(eulaDb);
+    const autoLogger = new LogManager(eulaDb, client, langManager, logClient);
     
 
-    client.guilds.cache.forEach(e => autoMod.registerRunner(e.id))
+    client.guilds.cache.forEach(e => {
+        autoMod.registerRunner(e.id);
+        autoLogger.registerRunner(e.id);
+    })
     
     client.on("messageCreate", async (message) => {
         eulaDb.userClient.isUserBlocked(message.guild.id, message.author.id).then(e => {
             if(e) message.delete();
         });
         autoMod.run(message);
+    });
+
+    client.on("messageDelete", async (message) => {
+        autoLogger.run(message, "messageDelete", message.guildId);
     });
 
     client.on("interactionCreate", async (er) => {
@@ -125,7 +138,7 @@ async function bootstrap() {
                 const perm: Readonly<Permissions> = er.member?.permissions as Readonly<Permissions>;
                 if(!cmd.permissions || cmd.permissions?.every(e => perm.has(e))) {
                     const lang: string = await eulaDb.settingClient.getSetting(er.guildId, "language") as string;
-                   cmd.action?.({interaction: er , client, eulaDb, log: logClient.log(er.guildId), autoMod, language: langManager.getLanguage(lang ?? process.env.defaultLanguage ?? "en")});
+                   cmd.action?.({interaction: er , client, eulaDb, log: autoLogger, autoMod, language: langManager.getLanguage(lang ?? process.env.defaultLanguage ?? "en")});
                 } else {
                     er.reply({
                         content: "...Schlecht [MISSING PERM]",

@@ -11,7 +11,12 @@ export class LogClient {
             const channel: string = await this.eulaDb.settingClient.getSetting(guild, "logchannel") as string;
             this.client.channels.fetch(channel).then(e => {
                 if(e.isText()) {
-                    e.send(options);
+                    try {
+                        e.send(options);
+                    } catch (err) {
+                        console.log(err);
+                        console.log(options, "ERR")
+                    }
                 }
             })
         }

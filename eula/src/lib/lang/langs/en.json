@@ -39,5 +39,23 @@
     },
     "warningthreshold": {
         "reply": "Threshold was set"
+    },
+    "log": {
+        "error": "Logtype unknown",
+        "setTo": "{:name} was set to {:value}"
+    },
+    "logger": {
+        "messageDeleted": {
+            "field_title": "Message was deleted",
+            "field_value": "Message deletion was detected"
+        },
+        "guildMemberAdd": {
+            "field_title": "New Member joined!",
+            "field_value": "{:tag} ({:name}) has joined this guild!"
+        },
+        "guildMemberRemove": {
+            "field_title": "Member has left!",
+            "field_value": "{:tag} ({:name}) has left this guild!"
+        }
     }
 }

@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { Client, CommandInteraction, MessageEmbed } from 'discord.js';
 import { DateTime } from 'luxon';
 import { Command } from '.';
+import { EventWarning } from '../lib/LogRunner';
 
 
 export const command: Command = {
@@ -45,12 +46,15 @@ export const command: Command = {
             .setDescription(`${language.get("warn.description", { user1: `<@${user.id}>`, username1: `**${user.username}**`, user2: `<@${interaction.user.id}>`, username2: `**${interaction.user.username}**`, reason: warning.warning.reason })}
             \n${warning.warning.validTill ? language.get("warn.warningWithTs", { timestamp: `<t:${Math.floor(DateTime.fromISO(warning.warning.validTill).toSeconds())}:f>` }) : language.get("warn.warningPermanent")}\n
             ${language.get("warn.amountWarnings", { amount: `${warning.warnings?.length ?? 0}` })}
-            `)
-            log({
-            embeds: [
-                warningEmbed
-            ]
-        });
+            `);
+
+            log.run(<EventWarning>{
+                amountWarnings: warning.warnings?.length ?? 0,
+                userThatWarned: interaction.user,
+                warnedUser: user,
+                warning: warning.warning,
+            }, "warningGenerated", interaction.guildId);
+
         if(interaction.options.getBoolean("notification")) {
             user.send({
                 embeds: [
