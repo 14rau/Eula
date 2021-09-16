@@ -34,6 +34,10 @@ export class LogManager {
         this.runner.get(guildId).log(event, logType, this.logClient.log(guildId));
     }
 
+    public getRunner(guildId: string) {
+        return this.runner.get(guildId);
+    }
+
     public refreshRunner(guild: string) {
         this.runner.get(guild).reload();
     }
@@ -87,21 +91,21 @@ export class LogRunner {
        
     }
 
-    private guildMemberAdd(member: GuildMember): MessageEmbed {
+    public guildMemberAdd(member: GuildMember): MessageEmbed {
         return new MessageEmbed()
             .setTimestamp(new Date())
             .addField(this.language.get("logger.guildMemberAdd.field_title"), this.language.get("logger.guildMemberAdd.field_value", { tag: `<@${member.id}>`, name: member.user.username }))
             .setAuthor(member.user.username, member.user.displayAvatarURL());
     }
 
-    private guildMemberRemove(member: GuildMember): MessageEmbed {
+    public guildMemberRemove(member: GuildMember): MessageEmbed {
         return new MessageEmbed()
             .setTimestamp(new Date())
             .addField(this.language.get("logger.guildMemberRemove.field_title"), this.language.get("logger.guildMemberRemove.field_value", { tag: `<@${member.id}>`, name: member.user.username }))
             .setAuthor(member.user.username, member.user.displayAvatarURL());
     }
 
-    private warningGenerated(ev: EventWarning) {
+    public warningGenerated(ev: EventWarning) {
         return new MessageEmbed()
             .setTimestamp(DateTime.now().toJSDate())
             .setTitle(this.language.get("warn.title"))
@@ -111,7 +115,7 @@ export class LogRunner {
             `);
     }
 
-    private messageDelete(message: Message | Partial<Message>): MessageEmbed {
+    public messageDelete(message: Message | Partial<Message>): MessageEmbed {
         return new MessageEmbed()
             .setTimestamp(new Date())
             .addField(this.language.get("logger.messageDeleted.field_title"), this.language.get("logger.messageDeleted.field_value"))

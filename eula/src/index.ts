@@ -137,6 +137,15 @@ async function bootstrap() {
         autoMod.run(message);
     });
 
+    client.on("guildCreate", async guild => {
+        autoMod.refreshRunner(guild.id);
+        autoLogger.registerRunner(guild.id);
+        if(process.env.masterGuild) {
+            const log = logClient.log(process.env.masterGuild);
+            log(`Bot has joined guild: ${guild.id} (${guild.name})`);
+        }
+    });
+
     client.on("messageDelete", async (message) => {
         autoLogger.run(message, "messageDelete", message.guildId);
     });
