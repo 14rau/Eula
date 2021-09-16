@@ -82,27 +82,34 @@ async function bootstrap() {
 
 
         if(!process.argv.includes("--devMode")) {
+            console.log("PRODUCTION-MODE")
+            console.log(commands)
             try {
                 console.log('Started refreshing application (/) commands.');
         
-                await rest.put(
+                const response = await rest.put(
                     Routes.applicationCommands(client.application.id),
                     { body: commands },
                 );
+                console.log(response)
         
                 console.log('Successfully reloaded application (/) commands.');
             } catch (error) {
                 console.error(error);
             }
         } else {
+            console.log("DEV-MODE")
+            console.log(commands)
             try {
                 console.log('Started refreshing application (/) commands.');
                 const serverCmdIndex = process.argv.indexOf("-s");
                 const server = process.argv[serverCmdIndex !== -1 ? serverCmdIndex+1 : -1];
-                await rest.put(
+                const response = await rest.put(
                     Routes.applicationGuildCommands(client.application.id, server ?? "758384067934158858"),
                     { body: commands },
                 );
+
+                console.log(response)
         
                 console.log('Successfully reloaded application (/) commands.');
             } catch (error) {
