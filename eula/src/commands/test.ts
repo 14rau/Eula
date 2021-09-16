@@ -4,7 +4,7 @@ import { Command } from ".";
 
 export const command: Command = {
     data: new SlashCommandBuilder()
-        .setName("test2")
+        .setName("test")
         .setDescription("testCommand"),
         action: ({ interaction, client, language }) => {
 
@@ -13,7 +13,6 @@ export const command: Command = {
              ephemeral: true,
         });
     },
-    isDev: true,
     permissions: [ "ADMINISTRATOR" ],
 }
 
