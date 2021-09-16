@@ -27,6 +27,7 @@ async function bootstrap() {
             password: process.env.MYSQL_PASSWORD,
             username: process.env.MYSQL_USER,
             database: process.env.MYSQL_DATABASE,
+            port: Number.parseInt(process.env.MYSQL_PORT),
             synchronize: true,
             logger: "advanced-console",
             host: process.env.DB_HOST,
@@ -59,8 +60,10 @@ async function bootstrap() {
         const command = require(`./commands/${file}`);
         try {
             const cmd = command.command.data.toJSON()
+            console.log(cmd)
             if(!process.argv.includes("--devMode") && cmd.devMode) continue;
             functions.set(cmd.name, command.command);
+            commands.push(cmd);
         } catch (err) {
             console.error(err)
             console.error(file)
