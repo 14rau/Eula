@@ -4,7 +4,7 @@ import { Command } from ".";
 
 export const command: Command = {
     data: new SlashCommandBuilder()
-        .setName("test")
+        .setName("test2")
         .setDescription("testCommand"),
         action: ({ interaction, client, language }) => {
 
