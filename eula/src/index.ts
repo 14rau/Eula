@@ -10,6 +10,7 @@ import { LogClient } from "./lib/LogClient";
 import { AutoModManager } from "./lib/AutoModRunner";
 import { LanguageManager } from "./lib/lang/Language";
 import { LogManager } from "./lib/LogRunner";
+import { buttonManager } from "./lib/Button";
 
 export const langManager = new LanguageManager();
 
@@ -59,7 +60,7 @@ async function bootstrap() {
     for (const file of commandFiles) {
         const command = require(`./commands/${file}`);
         try {
-            const cmd = command.command.data.toJSON()
+            const cmd = command.command.data.setDefaultPermission(true).toJSON()
             console.log(cmd)
             if(!process.argv.includes("--devMode") && cmd.devMode) continue;
             functions.set(cmd.name, command.command);
@@ -95,6 +96,7 @@ async function bootstrap() {
                     { body: commands },
                 );
                 console.log(response)
+                
         
                 console.log('Successfully reloaded application (/) commands.');
             } catch (error) {
@@ -175,6 +177,9 @@ async function bootstrap() {
                 content: "[ERR] Can't help you, sorry (DM Commands disabled)",
                 ephemeral: true,
             });
+        }
+        if(er.isButton()) {
+            buttonManager.handle(er.component as any);
         }
     });
 }
