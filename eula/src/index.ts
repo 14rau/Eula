@@ -91,7 +91,7 @@ async function bootstrap() {
             try {
                 console.log('Started refreshing application (/) commands.');
         
-                const response = await rest.post(
+                const response = await rest.put(
                     Routes.applicationCommands(client.application.id),
                     { body: commands },
                 );
