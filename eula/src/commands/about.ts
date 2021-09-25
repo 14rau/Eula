@@ -19,7 +19,7 @@ export const command: Command = {
                         new MessageButton()
                             .setLabel(language.get("about.invite"))
                             .setStyle("LINK")
-                            .setURL("https://discord.com/api/oauth2/authorize?client_id=880880243873832990&permissions=2147493888&scope=bot"),
+                            .setURL(`https://discord.com/api/oauth2/authorize?client_id=${client.user.id}&permissions=139586825366&scope=bot%20applications.commands`),
                         new MessageButton()
                             .setLabel(language.get("about.support"))
                             .setStyle("LINK")
