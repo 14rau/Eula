@@ -1,7 +1,5 @@
-import { Embed } from "@discordjs/builders";
 import { Client, ClientEvents, GuildMember, Message, MessageEmbed, User } from "discord.js";
-import { EulaDb } from "eula_db";
-import { Warning } from "eula_db/dist/entity/Warning";
+import { EulaDb, Warning } from "eula_db";
 import { DateTime } from "luxon";
 import { Language, LanguageManager } from "./lang/Language";
 import { LogClient } from "./LogClient";

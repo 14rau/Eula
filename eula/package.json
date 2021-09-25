@@ -24,8 +24,8 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "run-dev": "node --inspect dist/index.js -- --devMode -s 774996035423567913",
-    "nodemon": "nodemon --inspect dist/index.js -- --devMode -s 774996035423567913",
+    "run-dev": "node --inspect dist/index.js -- --devMode -s 758384067934158858",
+    "nodemon": "nodemon --inspect dist/index.js -- --devMode -s 758384067934158858",
     "run": "node dist/index.js"
   }
 }

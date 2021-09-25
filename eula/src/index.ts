@@ -61,7 +61,6 @@ async function bootstrap() {
         const command = require(`./commands/${file}`);
         try {
             const cmd = command.command.data.setDefaultPermission(true).toJSON()
-            console.log(cmd)
             if(!process.argv.includes("--devMode") && cmd.devMode) continue;
             functions.set(cmd.name, command.command);
             commands.push(cmd);
@@ -87,7 +86,6 @@ async function bootstrap() {
 
         if(!process.argv.includes("--devMode")) {
             console.log("PRODUCTION-MODE")
-            console.log(commands)
             try {
                 console.log('Started refreshing application (/) commands.');
         
@@ -95,7 +93,6 @@ async function bootstrap() {
                     Routes.applicationCommands(client.application.id),
                     { body: commands },
                 );
-                console.log(response)
                 
         
                 console.log('Successfully reloaded application (/) commands.');
@@ -104,7 +101,6 @@ async function bootstrap() {
             }
         } else {
             console.log("DEV-MODE")
-            console.log(commands)
             try {
                 console.log('Started refreshing application (/) commands.');
                 const serverCmdIndex = process.argv.indexOf("-s");
@@ -113,8 +109,6 @@ async function bootstrap() {
                     Routes.applicationGuildCommands(client.application.id, server ?? "758384067934158858"),
                     { body: commands },
                 );
-
-                console.log(response)
         
                 console.log('Successfully reloaded application (/) commands.');
             } catch (error) {
