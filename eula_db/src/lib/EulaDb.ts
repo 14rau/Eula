@@ -64,19 +64,18 @@ export class EulaDb {
         }
     }
     public async ensureUser(userId: string, guildId: string) {
-        const hashed = this.encryptUserId(guildId, userId);
-        const userEntry = await this.redisClient.get(`user_${hashed}`);
+        const userEntry = await this.redisClient.get(`user_${userId}_${guildId}`);
         if(userEntry) return;
         const repo = this.connection.getRepository(User);
-        let user = await repo.findOne({ where: { anoUser: hashed } });
+        let user = await repo.findOne({ where: { anoUser: userId} });
         if(!user) {
            user = new User();
-           user.anoUser = hashed;
+           user.anoUser = userId;
            user.guildId = guildId;
            user.isBlocked = true;
            repo.save(user);
         }
-        await this.redisClient.setEx(`user_${hashed}`, 60*60*24, hashed);
+        await this.redisClient.setEx(`user_${userId}_${guildId}`, 60*60*24, userId);
     }
 
     public async purge(guild: string) {
@@ -86,11 +85,5 @@ export class EulaDb {
         await guildRepo.delete({ id: guild });
         await userRepo.delete({ guildId: guild });
         await warningRepo.delete({ guildId: guild });
-    }
-
-    public encryptUserId(guild: string, userId: string) {
-        const cipher = crypto.createCipher("aes-256-cbc", Buffer.from(this.secret));
-        const encrypted = Buffer.concat([cipher.update(Buffer.from(`${guild}_${userId}`)), cipher.final()]);
-        return encrypted.toString("hex");
     }
 }

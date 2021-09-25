@@ -9,23 +9,21 @@ export class UserClient {
     }
 
     public async isUserBlocked(guild: string, userId: string) {
-        const hashed = this.eulaDb.encryptUserId(guild, userId)
         // lvl 1 cache
-        let value = this.cache.get<string>(`blockedUser_${userId}`);
+        let value = this.cache.get<string>(`blockedUser_${userId}_${guild}`);
         if(!value) {
             // lvl 2 cache
-            value = await this.eulaDb.redisClient.get(`blockedUser_${hashed}`);
+            value = await this.eulaDb.redisClient.get(`blockedUser_${userId}_${guild}`);
             if(!value) {
-                const hashed = this.eulaDb.encryptUserId(guild, userId);
                 const repo = this.eulaDb.connection.getRepository(User);
-                const user = await repo.findOne({ where: { anoUser: hashed } });
+                const user = await repo.findOne({ where: { anoUser: userId } });
                 if(user) {
-                    this.cache.set(hashed, "true", 60000);
-                    await this.eulaDb.redisClient.setEx(`blockedUser_${hashed}`, 60*60*24*30, "true");
+                    this.cache.set(userId, "true", 60000);
+                    await this.eulaDb.redisClient.setEx(`blockedUser_${userId}_${guild}`, 60*60*24*30, "true");
                     value = "true";
                 } else {
-                    this.cache.set(hashed, "false", 60000);
-                    await this.eulaDb.redisClient.setEx(`blockedUser_${hashed}`, 60*60*24*30, "false");
+                    this.cache.set(userId, "false", 60000);
+                    await this.eulaDb.redisClient.setEx(`blockedUser_${userId}_${guild}`, 60*60*24*30, "false");
                     value = "false";
                 }
             }
@@ -34,12 +32,11 @@ export class UserClient {
     }
 
     public async blockUser(guild: string, userId: string) {
-        const hashed = this.eulaDb.encryptUserId(guild, userId);
         const repo = this.eulaDb.connection.getRepository(User);
-        let user = await repo.findOne({ where: { anoUser: hashed } });
+        let user = await repo.findOne({ where: { anoUser: userId } });
         if(!user) {
            user = new User();
-           user.anoUser = hashed;
+           user.anoUser = userId;
            user.guildId = guild;
            user.isBlocked = true;
            repo.save(user);
@@ -48,16 +45,15 @@ export class UserClient {
         }
 
         // update caching
-        this.cache.set<string>(`blockedUser_${userId}`, "true", 60000);
-        this.eulaDb.redisClient.setEx(`blockedUser_${hashed}`, 60*60*24*30, "true");
+        this.cache.set<string>(`blockedUser_${userId}_${guild}`, "true", 60000);
+        this.eulaDb.redisClient.setEx(`blockedUser_${userId}_${guild}`, 60*60*24*30, "true");
     }
 
     public async pardonUser(guild: string, userId: string) {
-        const hashed = this.eulaDb.encryptUserId(guild, userId);
         const repo = this.eulaDb.connection.getRepository(User);
-        repo.delete({ anoUser: hashed });
+        repo.delete({ anoUser: userId });
         // update caching
-        this.cache.set<string>(`blockedUser_${userId}`, "false", 60000);
-        this.eulaDb.redisClient.setEx(`blockedUser_${hashed}`, 60*60*24*30, "false");
+        this.cache.set<string>(`blockedUser_${userId}_${guild}`, "false", 60000);
+        this.eulaDb.redisClient.setEx(`blockedUser_${userId}_${guild}`, 60*60*24*30, "false");
     }
 }

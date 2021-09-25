@@ -1,7 +1,6 @@
 import { Warning } from "../../entity/Warning";
 import { EulaDb } from "../EulaDb";
-import { EventEmitter } from "events";
-import { Brackets, IsNull, Raw } from "typeorm";
+import { Brackets } from "typeorm";
 
 interface WarningOptions {
     isGenerated?: boolean;
@@ -16,8 +15,7 @@ export class WarningClient {
 
     public async createWarning(userId: string, guildId: string, options: WarningOptions) {
         let warning = new Warning();
-        const encrypted = this.eulaDb.encryptUserId(guildId, userId);
-        warning.warnedUserId = encrypted;
+        warning.warnedUserId = userId;
         warning.guildId = guildId;
         warning.isGenerated = options.isGenerated;
         warning.reason = options.reason;
@@ -25,7 +23,7 @@ export class WarningClient {
         const warningRepo = this.eulaDb.connection.getRepository(Warning);
         await warningRepo.save(warning);
         const query = warningRepo.createQueryBuilder("warning")
-            .where("warnedUserId = :user AND dateDeleted IS NULL", { user: encrypted })
+            .where("warnedUserId = :user AND dateDeleted IS NULL", { user: userId })
             .andWhere(new Brackets((e) =>
                 e.where("validTill IS NULL")
                 .orWhere("validTill > NOW()"))
@@ -38,10 +36,9 @@ export class WarningClient {
     }
 
     public async getWarning(userId: string, guildId: string): Promise<Warning[]> {
-        const encrypted = this.eulaDb.encryptUserId(guildId, userId);
         const warningRepo = this.eulaDb.connection.getRepository(Warning);
         const query = warningRepo.createQueryBuilder("warning")
-            .where("warnedUserId = :user AND dateDeleted IS NULL", { user: encrypted })
+            .where("warnedUserId = :user AND dateDeleted IS NULL", { user: userId })
             .andWhere(new Brackets((e) =>
                 e.where("validTill IS NULL")
                 .orWhere("validTill > NOW()"))
@@ -51,15 +48,13 @@ export class WarningClient {
 
     public async invalidateWarning(userId: string, guildId: string, warningId: number) {
         // ensure validity of this deletion
-        const encrypted = this.eulaDb.encryptUserId(guildId, userId);
         const warningRepo = this.eulaDb.connection.getRepository(Warning);
-        await warningRepo.update({ id: warningId, guildId, warnedUserId: encrypted }, { dateDeleted: new Date().toISOString() })
+        await warningRepo.update({ id: warningId, guildId, warnedUserId: userId }, { dateDeleted: new Date().toISOString() })
     }
 
     public async clearWarnings(userId: string, guildId: string) {
         // ensure validity of this deletion
-        const encrypted = this.eulaDb.encryptUserId(guildId, userId);
         const warningRepo = this.eulaDb.connection.getRepository(Warning);
-        await warningRepo.update({ guildId, warnedUserId: encrypted }, { dateDeleted: new Date().toISOString() })
+        await warningRepo.update({ guildId, warnedUserId: userId }, { dateDeleted: new Date().toISOString() })
     }
 }
