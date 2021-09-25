@@ -38,7 +38,7 @@ export class WarningClient {
     public async getWarning(userId: string, guildId: string): Promise<Warning[]> {
         const warningRepo = this.eulaDb.connection.getRepository(Warning);
         const query = warningRepo.createQueryBuilder("warning")
-            .where("warnedUserId = :user AND dateDeleted IS NULL", { user: userId })
+            .where("warnedUserId = :user AND dateDeleted IS NULL AND guildId = :guild", { user: userId, guild: guildId })
             .andWhere(new Brackets((e) =>
                 e.where("validTill IS NULL")
                 .orWhere("validTill > NOW()"))
