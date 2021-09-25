@@ -1,16 +1,22 @@
-import { MessageButton } from "discord.js";
+import { ButtonInteraction, MessageButton } from "discord.js";
 
 export class ButtonManager {
-    private map = new Map<string, () => void>();
+    private map = new Map<string, {
+        fn: (btn: MessageButton, interaction: ButtonInteraction) => void,
+        userId: string;
+    }>();
 
-    public decorate(button: MessageButton, handler: () => void): MessageButton {
-       this.map.set(button.customId, handler);
+    public decorate(button: MessageButton, handler: (btn: MessageButton, interaction: ButtonInteraction) => void, userId?: string): MessageButton {
+       this.map.set(button.customId, {fn: handler, userId });
        setTimeout(() => this.map.delete(button.customId), 10000*6*30);
        return button;
     }
 
-    public handle(button: MessageButton) {
-        this.map.get(button.customId)();
+    public handle(button: MessageButton, interaction: ButtonInteraction) {
+        const obj = this.map.get(button.customId);
+        if(obj && interaction) {
+            obj.fn(button, interaction);
+        }
     }
 }
 

@@ -21,11 +21,18 @@ export class Warning {
     @Column("varchar",{ length: 255 })
     public warnedUserId: string;
 
+    @Column("varchar",{ length: 255 })
+    public warnerUserId: string;
+
     @Column("varchar",{ length: 200 })
     public reason: string;
 
     @Column("bool", { default: false })
     public isGenerated: boolean;
+
+    // @ManyToOne(() => User)
+    // @JoinColumn({ name: "warnerUserId", referencedColumnName: "anoUser" })
+    // public _warnerUser: User;
 
     @ManyToOne(() => User)
     @JoinColumn({ name: "warnedUserId", referencedColumnName: "anoUser" })

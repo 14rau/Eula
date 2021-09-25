@@ -173,7 +173,7 @@ async function bootstrap() {
             });
         }
         if(er.isButton()) {
-            buttonManager.handle(er.component as any);
+            buttonManager.handle(er.component as any, er);
         }
     });
 }

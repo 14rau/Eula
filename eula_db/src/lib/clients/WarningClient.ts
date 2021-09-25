@@ -13,13 +13,14 @@ export class WarningClient {
 
     }
 
-    public async createWarning(userId: string, guildId: string, options: WarningOptions) {
+    public async createWarning(userId: string, warnerUserId: string, guildId: string, options: WarningOptions) {
         let warning = new Warning();
         warning.warnedUserId = userId;
         warning.guildId = guildId;
         warning.isGenerated = options.isGenerated;
         warning.reason = options.reason;
         warning.validTill = options.validTill;
+        warning.warnerUserId = warnerUserId;
         const warningRepo = this.eulaDb.connection.getRepository(Warning);
         await warningRepo.save(warning);
         const query = warningRepo.createQueryBuilder("warning")

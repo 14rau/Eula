@@ -1,7 +1,8 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { Client, CommandInteraction, MessageEmbed } from 'discord.js';
+import { Client, CommandInteraction, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import { DateTime } from 'luxon';
 import { Command } from '.';
+import { buttonManager } from '../lib/Button';
 import { EventWarning } from '../lib/LogRunner';
 
 
@@ -33,6 +34,7 @@ export const command: Command = {
         await eulaDb.ensureUser(user.id, interaction.guildId);
         const warning = await eulaDb.warningClient.createWarning(
             user.id,
+            interaction.user.id,
             interaction.guildId,
             {
                 reason: interaction.options.getString("description"),
@@ -71,7 +73,39 @@ export const command: Command = {
         const threshold: number = await eulaDb.settingClient.getSetting(interaction.guildId, "warningthreshold") as number;
         interaction.reply({ content: language.get("warn.reply"), embeds: [ warningEmbed ], ephemeral: true });
         if(threshold && warning.warnings.length >= threshold) {
-            interaction.followUp({ content: language.get("warn.treshholdWarning"), ephemeral: true});
+
+            const row = new MessageActionRow()
+            .addComponents(
+                buttonManager.decorate(new MessageButton()
+                    .setLabel("Kick")
+                    .setStyle("DANGER")
+                    .setCustomId(`${interaction.id}_KICK`), (_, int) => {
+                        int.update({
+                            components: [],
+                            content: "You selected 'Kick'. User will be kicked"
+                        });
+                        interaction.guild.members.fetch(user.id).then(e => e.kick(`Warning threshhold reached`))
+                    }),
+                buttonManager.decorate(new MessageButton()
+                    .setLabel("Ban")
+                    .setCustomId(`${interaction.id}_BAN`)
+                    .setStyle("DANGER"), (_, int) => {
+                        int.update({
+                            components: [],
+                            content: "You selected 'Ban'. User will be banned"
+                        })
+                    }),
+                buttonManager.decorate(new MessageButton()
+                    .setLabel("Snooze")
+                    .setCustomId(`${interaction.id}_SNOOZE`)
+                    .setStyle("SECONDARY"), (_, int) => {
+                        int.update({
+                            components: [],
+                            content: "You selected 'Snooze'. You will be reminded at the next warning"
+                        })
+                    }),
+            );
+            interaction.followUp({ content: language.get("warn.treshholdWarning"), components: [ row ]});
         }
     },
     permissions: [ "KICK_MEMBERS" ],
