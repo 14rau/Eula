@@ -38,8 +38,6 @@ export const command: Command = {
 
         let page = 1;
 
-        console.log(warnings);
-
         const row = new MessageActionRow()
             .addComponents(
                 buttonManager.decorate(new MessageButton()
