@@ -17,7 +17,7 @@
       "node-cache": "^5.1.2",
       "redis": "^4.0.0-rc.1",
       "reflect-metadata": "^0.1.10",
-      "typeorm": "0.2.34"
+      "typeorm": "0.2.37"
    },
    "scripts": {
       "build": "tsc",
