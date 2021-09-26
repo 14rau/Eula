@@ -47,6 +47,19 @@ export class WarningClient {
         return await query.getMany();
     }
 
+    public async getWarnings(guildId: string, options?: {includeExpired?: boolean}): Promise<Warning[]> {
+        const warningRepo = this.eulaDb.connection.getRepository(Warning);
+        const query = warningRepo.createQueryBuilder("warning")
+            .where("dateDeleted IS NULL AND guildId = :guild", { guild: guildId })
+        if(!options?.includeExpired) {
+            query.andWhere(new Brackets((e) =>
+                e.where("validTill IS NULL")
+                .orWhere("validTill > NOW()"))
+            );
+        }
+        return await query.getMany();
+    }
+
     public async invalidateWarning(userId: string, guildId: string, warningId: number) {
         // ensure validity of this deletion
         const warningRepo = this.eulaDb.connection.getRepository(Warning);
