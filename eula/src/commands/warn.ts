@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { Client, CommandInteraction, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import { DateTime } from 'luxon';
 import { Command } from '.';
 import { buttonManager } from '../lib/Button';
@@ -82,7 +82,7 @@ export const command: Command = {
                     .setCustomId(`${interaction.id}_KICK`), (_, int) => {
                         int.update({
                             components: [],
-                            content: "You selected 'Kick'. User will be kicked"
+                            content: language.get("warn.kick"),
                         });
                         interaction.guild.members.fetch(user.id).then(e => e.kick(`Warning threshhold reached`));
                     }, interaction.user.id),
@@ -92,7 +92,7 @@ export const command: Command = {
                     .setStyle("DANGER"), (_, int) => {
                         int.update({
                             components: [],
-                            content: "You selected 'Ban'. User will be banned"
+                            content: language.get("warn.ban"),
                         })
                         interaction.guild.members.fetch(user.id).then(e => e.ban({ reason: "Warning threshhold reached" }));
                     }, interaction.user.id),
@@ -102,7 +102,7 @@ export const command: Command = {
                     .setStyle("SECONDARY"), (_, int) => {
                         int.update({
                             components: [],
-                            content: "You selected 'Snooze'. You will be reminded at the next warning"
+                            content: language.get("warn.snooze"),
                         });
                     }, interaction.user.id),
             );
