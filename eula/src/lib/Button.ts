@@ -14,7 +14,7 @@ export class ButtonManager {
 
     public handle(button: MessageButton, interaction: ButtonInteraction) {
         const obj = this.map.get(button.customId);
-        if(obj && interaction) {
+        if(obj && (interaction.user.id === obj.userId || !obj.userId)) {
             obj.fn(button, interaction);
         }
     }

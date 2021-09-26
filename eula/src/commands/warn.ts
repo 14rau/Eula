@@ -84,8 +84,8 @@ export const command: Command = {
                             components: [],
                             content: "You selected 'Kick'. User will be kicked"
                         });
-                        interaction.guild.members.fetch(user.id).then(e => e.kick(`Warning threshhold reached`))
-                    }),
+                        interaction.guild.members.fetch(user.id).then(e => e.kick(`Warning threshhold reached`));
+                    }, interaction.user.id),
                 buttonManager.decorate(new MessageButton()
                     .setLabel("Ban")
                     .setCustomId(`${interaction.id}_BAN`)
@@ -94,7 +94,8 @@ export const command: Command = {
                             components: [],
                             content: "You selected 'Ban'. User will be banned"
                         })
-                    }),
+                        interaction.guild.members.fetch(user.id).then(e => e.ban({ reason: "Warning threshhold reached" }));
+                    }, interaction.user.id),
                 buttonManager.decorate(new MessageButton()
                     .setLabel("Snooze")
                     .setCustomId(`${interaction.id}_SNOOZE`)
@@ -102,8 +103,8 @@ export const command: Command = {
                         int.update({
                             components: [],
                             content: "You selected 'Snooze'. You will be reminded at the next warning"
-                        })
-                    }),
+                        });
+                    }, interaction.user.id),
             );
             interaction.followUp({ content: language.get("warn.treshholdWarning"), components: [ row ]});
         }
