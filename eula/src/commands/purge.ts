@@ -1,6 +1,4 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { Client, CommandInteraction } from 'discord.js';
-import { EulaDb } from 'eula_db';
 import { Command } from '.';
 
 
