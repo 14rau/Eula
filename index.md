@@ -1,37 +1,64 @@
-## Welcome to GitHub Pages
+<p align="center">
+  <a href="" rel="noopener">
+ <img width=200px height=200px src="https://cdn.discordapp.com/avatars/880880243873832990/f05e95557baeb877e082360979f3319d.webp?size=512" alt="Bot logo"></a>
+</p>
 
-You can use the [editor on GitHub](https://github.com/14rau/Eula/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+<h3 align="center">eula</h3>
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+<div align="center">
 
-### Markdown
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
+[![Discord](https://img.shields.io/discord/774996035423567913?label=discord)](https://discord.gg/Zmtr88WBBx)
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
 
-```markdown
-Syntax highlighted code block
+</div>
 
-# Header 1
-## Header 2
-### Header 3
+---
 
-- Bulleted
-- List
+<p align="center"> Simple message deletion bot
+    <br> 
+</p>
 
-1. Numbered
-2. List
+## 📝 Table of Contents
+- [Usage](#usage)
+- [Getting Started](#getting_started)
 
-**Bold** and _Italic_ and `Code` text
 
-[Link](url) and ![Image](src)
+## 💭 How it works <a name = "working"></a>
+
+| Command  | Arguments | What it does |
+| ------------- | ------------- | ------------- |
+| /ignore  | user  | Messages of the provided user will be deleted  |
+| /allow  | user  | Messages of the provided user will not be deleted anymore  |
+| /about  | -  | Show some bot information  |
+
+
+## 🏁 Getting Started <a name = "getting_started"></a>
+
+When you follow this instructions, you can deploy Eula by yourself. You can either just run the bot, or you can use Docker to deploy the bot.
+
+### Installing Dev Env
+
+A step by step series of examples that tell you how to get a development env running.
+First, clone the repository. You need atleast Node v16.8.0 to run this bot. Its also recommended to use `yarn` instead of `npm`.
+
+Install all packages
+```
+yarn
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+Copy example.env file and name the copy `.env` and insert your bottoken
 
-### Jekyll Themes
+Watch filechanges
+```
+yarn watch
+```
+Restart on filechanges
+```
+yarn nodemon
+```
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/14rau/Eula/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+Commands should be added into the `src/commands` folder. You can use the DataLoder class, to load/save Data as a json file. By default Eula will create a localdb.json file to store the data, since a database would be a overkill for this small project.
 
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+### Deploy
+To deploy Eula by yourself, you have to have docker installed, and also created your `.env` and copied over your token. You only have to run `docker-compose up --build` to run your current version in an container.
